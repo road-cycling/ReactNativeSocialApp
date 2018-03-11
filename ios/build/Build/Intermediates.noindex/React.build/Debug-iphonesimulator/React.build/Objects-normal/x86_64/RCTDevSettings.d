@@ -1,0 +1,22 @@
+dependencies: \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Modules/RCTDevSettings.mm \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Modules/RCTDevSettings.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTBridge.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTBridgeDelegate.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTJavaScriptLoader.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTDefines.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTBridgeModule.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTFrameUpdate.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTInvalidating.h \
+  /Users/btcpro/Desktop/learn/ios/build/Build/Products/Debug-iphonesimulator/include/jschelpers/JavaScriptCore.h \
+  /Users/btcpro/Desktop/learn/ios/build/Build/Products/Debug-iphonesimulator/include/jschelpers/JSCWrapper.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTBridge+Private.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTEventDispatcher.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Modules/RCTJSCSamplingProfiler.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTLog.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTAssert.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Base/RCTUtils.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/DevSupport/RCTPackagerClient.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/Profiler/RCTProfile.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/DevSupport/RCTPackagerConnection.h \
+  /Users/btcpro/Desktop/learn/node_modules/react-native/React/DevSupport/RCTInspectorDevServerHelper.h

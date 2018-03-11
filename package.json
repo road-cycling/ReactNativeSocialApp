@@ -1,0 +1,35 @@
+{
+  "name": "learn",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "babel-preset-react-native-stage-0": "^1.0.1",
+    "jest-react-native": "^18.0.0",
+    "react-test-renderer": "16.2.0"
+  },
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "test": "node node_modules/jest/bin/jest.js"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "dependencies": {
+    "firebase": "^4.11.0",
+    "graphql": "^0.13.1",
+    "react": "16.2.0",
+    "react-native": "0.52.0",
+    "react-native-elements": "1.0.0-beta2",
+    "react-native-image-picker": "^0.26.7",
+    "react-native-permissions": "^1.1.1",
+    "react-native-vector-icons": "^4.5.0",
+    "react-redux": "^5.0.7",
+    "react-router-native": "^4.2.0",
+    "redux": "^3.7.2",
+    "redux-promise": "^0.5.3",
+    "redux-thunk": "^2.2.0",
+    "toggle-switch-react-native": "^0.2.0"
+  }
+}
