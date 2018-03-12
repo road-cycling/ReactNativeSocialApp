@@ -40,7 +40,7 @@ export const gPublicChanged = text => {
 export const gLoadingChanged = text => {
   return {
     type: GROUP_CREATE_LOADING_CHANGED,
-    payload: text 
+    payload: text
   }
 }
 

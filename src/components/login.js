@@ -2,32 +2,14 @@ import React, { Component } from 'react'
 import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ActivityIndicator, TouchableHighlight } from 'react-native'
 import { emailChanged, passwordChanged, aMethodChanged, nameChanged, loginUser } from '../actions'
 import { connect } from 'react-redux'
-//import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-picker';
+import firebase from 'firebase'
 
 
 class Login extends Component {
 
-  componentDidMount() {
-    /*
-    Permissions.checkMultiple(['photo', 'camera']).then(response => {
-      if
-      console.log(response)
-    }) */
 
-  }
-/*
-  onSetImage() {
-    var options = {
-      title: 'Select Avatar',
 
-    };
-
-    ImagePicker.launchImageLibrary(options, (response, error)  => {
-    console.log(reponse)
-    console.log(error)
-});
-}
-*/
   onButtonPress() {
     const { email, password, name, authMethod } = this.props;
     this.props.loginUser(email, password, name, authMethod)
@@ -110,6 +92,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
+    console.log(state.loginReducer)
   let {
     authMethod,
     email,

@@ -24,7 +24,7 @@ class App extends Component {
       authDomain: "ssuproject-4980c.firebaseapp.com",
       databaseURL: "https://ssuproject-4980c.firebaseio.com",
       projectId: "ssuproject-4980c",
-      storageBucket: "",
+      storageBucket: "ssuproject-4980c.appspot.com",
       messagingSenderId: "289341777797"
     };
     firebase.initializeApp(config);

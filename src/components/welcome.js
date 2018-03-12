@@ -1,11 +1,43 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Image, TouchableHighlight } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, Image, TouchableHighlight, Platform } from 'react-native'
 import { connect } from 'react-redux'
-import ImagePicker from 'react-native-image-picker';
 import { Link } from 'react-router-native'
+import ImagePicker from 'react-native-image-picker';
+import firebase from 'firebase'
+import RNFetchBlob from 'react-native-fetch-blob'
+import { onStartWelcomePage, newImage } from '../actions';
 
 
 class Welcome extends Component {
+
+  componentWillMount() {
+    this.props.onStartWelcomePage()
+  }
+
+  onSetImage() {
+    let options = {
+      title: 'Select Avatar',
+
+    };
+
+    ImagePicker.showImagePicker(options, async (response) => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        let { uri } = response;
+        this.props.newImage(uri)
+      }
+    });
+  }
 
   onButtonPress() {
     this.props.history.push('/group')
@@ -32,13 +64,13 @@ class Welcome extends Component {
             <TouchableHighlight onPress={() => this.onSetImage()}>
               <Image
                 style={styles.picture}
-                source={require('../image/reactNative.png')}
+                source={this.props.uri === '' ? require('../image/reactNative.png') : {uri: this.props.uri }}
               />
             </TouchableHighlight>
           </View>
         </View>
         <View style={styles.bodyEnd}>
-          <Text style={{fontSize: 24, fontWeight: 'bold'}}>Hello {this.props.displayName}</Text>
+          <Text style={{fontSize: 24, fontWeight: 'bold'}}>Hello {this.props.name}</Text>
         </View>
         <View style={styles.end}>
           <TouchableOpacity
@@ -61,13 +93,16 @@ class Welcome extends Component {
 }
 
 function mapStateToProps(state) {
-
-  let { user } = state.loginReducer;
-  let { providerData } = user;
-  let displayName = providerData[0].displayName;
+  let {
+    uri,
+    name,
+    loading
+  } = state.welcomeReducer;
+  console.log(state.welcomeReducer)
   return {
-    user,
-    displayName
+    uri,
+    name,
+    loading
   }
 }
 
@@ -137,4 +172,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect(mapStateToProps, null)(Welcome);
+export default connect(mapStateToProps, { onStartWelcomePage, newImage })(Welcome);

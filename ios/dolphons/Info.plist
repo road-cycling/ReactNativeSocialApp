@@ -65,5 +65,13 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>We need to access your camera</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need to access your library</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need to access this</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need to access your microphone</string>
 </dict>
 </plist>
