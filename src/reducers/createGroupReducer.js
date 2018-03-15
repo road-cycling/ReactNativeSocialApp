@@ -17,6 +17,7 @@ const INITIAL_STATE = {
 // 0 is private
 
 export default (state=INITIAL_STATE, action) => {
+  
   switch(action.type) {
 
     case GROUP_CREATE_NAME_CHANGED:

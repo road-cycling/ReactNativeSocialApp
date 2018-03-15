@@ -11,10 +11,6 @@ import createGroup from './src/components/createGroup'
 import myGroups from './src/components/myGroups'
 import thunk from 'redux-thunk';
 
-//import { Switch } from 'react-router-native'
-
-
-
 class App extends Component {
 
   componentWillMount() {
@@ -36,9 +32,9 @@ class App extends Component {
         <MemoryRouter>
           <View style={{ flex: 1 }}>
             <Switch>
-              <Route path="/"   exact component={Login} />
-              <Route path="/welcome"  component={Welcome} />
-              <Route path="/group" component={createGroup} />
+              <Route path="/"         exact component={Login} />
+              <Route path="/welcome"        component={Welcome} />
+              <Route path="/group"          component={createGroup} />
               <Route path="/mygroups" exact component={myGroups} />
             </Switch>
           </View>

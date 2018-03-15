@@ -1,11 +1,22 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Image, TouchableHighlight, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-native'
 import ImagePicker from 'react-native-image-picker';
 import firebase from 'firebase'
 import RNFetchBlob from 'react-native-fetch-blob'
 import { onStartWelcomePage, newImage } from '../actions';
+import Image from 'react-native-image-progress';
+import Progress from 'react-native-progress/Bar';
+
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableHighlight,
+  Platform,
+  Image as RNImage 
+} from 'react-native'
 
 
 class Welcome extends Component {
@@ -20,7 +31,7 @@ class Welcome extends Component {
 
     };
 
-    ImagePicker.showImagePicker(options, async (response) => {
+    ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
 
       if (response.didCancel) {
@@ -54,18 +65,28 @@ class Welcome extends Component {
               to='/mygroups'>
               <Text style={{color: '#FFF'}}> My Groups </Text>
             </Link>
-
           </TouchableOpacity>
           <View style={styles.small}></View>
         </View>
         <View style={styles.body1}></View>
         <View style={styles.body}>
           <View>
-            <TouchableHighlight onPress={() => this.onSetImage()}>
+            <TouchableHighlight onPress={() => this.onSetImage()} style={{ borderRadius: 100 }}>
+          {
+            this.props.uri === null ? (
+              <RNImage
+                style={styles.picture1}
+                source={require('../image/reactNative.png')}
+              />
+            ) : (
               <Image
                 style={styles.picture}
-                source={this.props.uri === '' ? require('../image/reactNative.png') : {uri: this.props.uri }}
+                imageStyle={{ borderRadius: 100 }}
+                source={{uri: this.props.uri }}
+                indicator={Progress.Circle}
               />
+            )
+          }
             </TouchableHighlight>
           </View>
         </View>
@@ -98,7 +119,6 @@ function mapStateToProps(state) {
     name,
     loading
   } = state.welcomeReducer;
-  console.log(state.welcomeReducer)
   return {
     uri,
     name,
@@ -167,9 +187,14 @@ const styles = StyleSheet.create({
   picture: {
     width: 130,
     height: 130,
-    borderRadius: 100,
-    backgroundColor: 'white'
-  }
+
+  },
+  picture1: {
+  width: 130,
+  height: 130,
+  borderRadius: 100,
+
+}
 })
 
 export default connect(mapStateToProps, { onStartWelcomePage, newImage })(Welcome);

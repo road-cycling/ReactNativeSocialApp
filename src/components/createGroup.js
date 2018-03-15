@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ActivityIndicator, TouchableHighlight } from 'react-native'
 import { connect } from 'react-redux'
 import ToggleSwitch from 'toggle-switch-react-native'
 import { Link } from 'react-router-native'
@@ -12,6 +11,18 @@ import {
   gLoadingChanged,
   gCreate
 } from '../actions'
+
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+  TouchableHighlight
+} from 'react-native'
+
 
 
 class createGroup extends Component {

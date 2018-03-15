@@ -10,10 +10,12 @@ class Login extends Component {
 
 
 
-  onButtonPress() {
+  async onButtonPress() {
     const { email, password, name, authMethod } = this.props;
-    this.props.loginUser(email, password, name, authMethod)
-      .then(() => this.props.history.push('/welcome'))
+    await this.props.loginUser(email, password, name, authMethod)
+    this.props.history.push('/welcome')
+
+    //need error handling
   }
 
   updateMethod(method) {
@@ -31,20 +33,6 @@ class Login extends Component {
 
   onEmailChange(text) {
     this.props.emailChanged(text)
-  }
-
-  getInput() {
-    let inputOne = [<TextInput key={0} onChangeText={text => this.onEmailChange(text)} value={this.props.email} style={styles.textInput} placeholder={"Email"} />,
-                    <TextInput key={1} onChangeText={text => this.onPasswordChange(text)} value={this.props.password}  secureTextEntry={true} style={styles.textInput} placeholder={"Password"} />]
-    let inputTwo =  <TextInput key={2} onChangeText={text => this.onNameChange(text)} value={this.props.name} style={styles.textInput} placeholder={"Name"} />
-
-    return this.props.authMethod === 0 ? inputOne : [inputTwo, ...inputOne]
-  }
-
-  buttonOrLoad() {
-    return this.props.loading ?
-      <ActivityIndicator size="small" color="#0097A7" />
-      : <Text style={{color: '#FFF'}}> {this.props.authMethod === 0 ? 'Log In' : 'Sign Up'} </Text>
   }
 
   render() {
@@ -77,11 +65,36 @@ class Login extends Component {
         </View>
         <View style={styles.midPad}></View>
         <View style={styles.end}>
-          {this.getInput()}
+          {this.props.authMethod === 1
+              ? <TextInput
+                onChangeText={text => this.onNameChange(text)}
+                value={this.props.name}
+                style={styles.textInput}
+                placeholder={"Name"}
+                />
+               : null
+          }
+          <TextInput
+            onChangeText={text => this.onEmailChange(text)}
+            value={this.props.email}
+            style={styles.textInput}
+            placeholder={"Email"} />
+          <TextInput
+            onChangeText={text => this.onPasswordChange(text)}
+            value={this.props.password}
+            secureTextEntry={true}
+            style={styles.textInput}
+            placeholder={"Password"}
+            />
+
           <TouchableOpacity
             onPress={() => this.onButtonPress()}
-            style={styles.button} >
-            {this.buttonOrLoad()}
+            style={styles.button}>
+              {
+                this.props.loading
+                ?  <ActivityIndicator size="small" color="#0097A7" />
+                : <Text style={{color: '#FFF'}}> {this.props.authMethod === 0 ? 'Log In' : 'Sign Up'} </Text>
+              }
           </TouchableOpacity>
 
 

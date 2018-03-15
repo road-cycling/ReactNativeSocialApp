@@ -1,10 +1,19 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity, Image, TouchableHighlight, ScrollView } from 'react-native'
 import { Card, ListItem, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-native'
 import firebase from 'firebase';
-import { graphql, buildSchema } from 'graphql'
+//import { graphql, buildSchema } from 'graphql'
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Image,
+  TouchableHighlight,
+  ScrollView
+} from 'react-native'
+
 
 class myGroups extends Component {
 
