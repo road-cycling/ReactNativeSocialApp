@@ -2,15 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import ToggleSwitch from 'toggle-switch-react-native'
 import { Link } from 'react-router-native'
-
-import {
-  gNameChanged,
-  gOrganizerChanged,
-  gSummaryChanged,
-  gPublicChanged,
-  gLoadingChanged,
-  gCreate
-} from '../actions'
+import firebase from 'firebase'
 
 import {
   StyleSheet,
@@ -25,34 +17,27 @@ import {
 
 
 
-class createGroup extends Component {
+class viewGroup extends Component {
 
-  onChange(input, type) {
-    switch(type) {
+  state = {
+    rootRef: /*firebase.database().ref()*/ null,
+    name: 'PI KAPPA BETA ALPHA NETA',
+    organizer: 'test value',
+    owner: 'Nathan Kamm',
+    summary: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`
 
-      case 'name':
-        return this.props.gNameChanged(input)
-
-      case 'organizer':
-        return this.props.gOrganizerChanged(input)
-
-      case 'summary':
-        return this.props.gSummaryChanged(input)
-
-      case 'toggle':
-        let value = input === true ? 0 : 1;
-        return this.props.gPublicChanged(value)
-
-      case 'create':
-        const { name, organizer, summary, isPublic } = this.props
-        return this.props.gCreate(name, organizer, summary, isPublic);
-
-      default:
-        console.log('error')
-    }
   }
-
+/*
+  async componentWillMount() {
+    let data = this.props.match.params.group
+    console.log(data)
+    data = await this.state.rootRef.child(`groups/${data}`).once('value');
+    let { name, organizer, owner, summary } = data.val();
+    this.setState({ name, organizer, owner, summary });
+  }
+*/
   render() {
+
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.headerTop}>
@@ -74,13 +59,13 @@ class createGroup extends Component {
             style={styles.textInputOne}
             placeholder={"Name"}
             value={this.props.name}
-            onChangeText={text => this.onChange(text, 'name')}
+            onChangeText={() => {}}
           />
           <TextInput
             style={styles.textInputOne}
             placeholder={"Organizer"}
             value={this.props.organizer}
-            onChangeText={text => this.onChange(text, 'organizer')}
+            onChangeText={() => {}}
             />
         </View>
         <View style={styles.summaryBox}>
@@ -89,7 +74,7 @@ class createGroup extends Component {
             placeholder={"Summary"}
             multiline = {true}
             value={this.props.summary}
-            onChangeText={text => this.onChange(text, 'summary')}
+            onChangeText={() => {}}
            />
         </View>
         <View style={styles.tBox}>
@@ -100,11 +85,11 @@ class createGroup extends Component {
             label='Public / Private'
             labelStyle={{color: 'black', fontWeight: '700'}}
             size='medium'
-            onToggle={boolean => this.onChange(boolean, 'toggle')}
+            onToggle={() => {}}
             />
 
             <TouchableOpacity
-              onPress={() => this.onChange(null, 'create')}
+              onPress={() => {}}
               style={styles.button}>
               <Text style={{fontWeight: 'bold'}}> Create </Text>
             </TouchableOpacity>
@@ -193,11 +178,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default connect(mapStateToProps,
- {  gNameChanged,
-  gOrganizerChanged,
-  gSummaryChanged,
-  gPublicChanged,
-  gLoadingChanged,
-  gCreate }
-)(createGroup);
+export default connect(mapStateToProps)(viewGroup);

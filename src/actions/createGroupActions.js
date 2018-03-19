@@ -50,7 +50,8 @@ export const gCreate = (name, organizer, summary, isPublic) => {
   ///users/${currentUser.uid}/groups
   return async dispatch => {
     try {
-      const response = await firebase.database().ref(`/groups/${name}${uid}`)
+      //const response = await firebase.database().ref(`/groups/${name}${uid}`)
+      const response = await firebase.database().ref(`/groups/`)
         .push({
            name,
           organizer,
@@ -59,7 +60,8 @@ export const gCreate = (name, organizer, summary, isPublic) => {
           owner: uid,
         })
       const { key } = response
-      await firebase.database().ref(`/users/${uid}`).push({ owner: uid })
+      //console.log(key);
+      await firebase.database().ref(`/users/${uid}`).push({ key })
       dispatch({ type: GROUP_CREATE_SUCCESS })
     } catch (e) { console.log(e) }
   }

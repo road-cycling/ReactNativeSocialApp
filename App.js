@@ -6,10 +6,12 @@ import { MemoryRouter, Route, Switch } from 'react-router-native'
 import reducers from './src/reducers'
 import firebase from 'firebase'
 import Login from './src/components/login'
-import Welcome from './src/components/welcome';
+import Welcome from './src/components/welcome'
 import createGroup from './src/components/createGroup'
 import myGroups from './src/components/myGroups'
-import thunk from 'redux-thunk';
+import joinGroup from './src/components/joinGroup'
+import viewGroup from './src/components/viewGroup'
+import thunk from 'redux-thunk'
 
 class App extends Component {
 
@@ -36,6 +38,8 @@ class App extends Component {
               <Route path="/welcome"        component={Welcome} />
               <Route path="/group"          component={createGroup} />
               <Route path="/mygroups" exact component={myGroups} />
+              <Route path="/joingroup"      component={joinGroup} />
+              <Route path="/getGroup/:group" component={viewGroup} />
             </Switch>
           </View>
         </MemoryRouter>
@@ -46,6 +50,16 @@ class App extends Component {
 
 export default App;
 
+/*
+<Route path="/getGroup/:group" component={viewGroup} />
+*/
+
+/*
+<Route
+  path='/dashboard'
+  render={(props) => <Dashboard {...props} isAuthed={true} />}
+/>
+*/
 
 
 

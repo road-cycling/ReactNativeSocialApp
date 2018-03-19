@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Platform,
-  Image as RNImage 
+  Image as RNImage
 } from 'react-native'
 
 
@@ -50,8 +50,12 @@ class Welcome extends Component {
     });
   }
 
-  onButtonPress() {
-    this.props.history.push('/group')
+  onButtonPress(data) {
+    this.props.history.push(
+      data === 'group'
+      ? '/group'
+      : '/joingroup'
+    )
   }
 
   render() {
@@ -95,13 +99,13 @@ class Welcome extends Component {
         </View>
         <View style={styles.end}>
           <TouchableOpacity
-            onPress={() => this.onButtonPress()}
+            onPress={() => this.onButtonPress('group')}
             style={styles.bottomBox}>
             <Text style={styles.boxColor}> Create Group </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {}}
+            onPress={() => this.onButtonPress('joingroup')}
             style={styles.bottomBox}>
             <Text style={styles.boxColor}> Join Groups </Text>
           </TouchableOpacity>
