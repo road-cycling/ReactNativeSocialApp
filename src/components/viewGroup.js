@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import ToggleSwitch from 'toggle-switch-react-native'
 import { Link } from 'react-router-native'
 import firebase from 'firebase'
+import { Card, ListItem, Button, SearchBar } from 'react-native-elements'
 
 import {
   StyleSheet,
@@ -12,7 +13,8 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
-  TouchableHighlight
+  TouchableHighlight,
+  FlatList
 } from 'react-native'
 
 
@@ -20,79 +22,129 @@ import {
 class viewGroup extends Component {
 
   state = {
-    rootRef: /*firebase.database().ref()*/ null,
+    rootRef: firebase.database().ref(),
     name: 'PI KAPPA BETA ALPHA NETA',
+    uid: '',
     organizer: 'test value',
     owner: 'Nathan Kamm',
-    summary: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`
+    summary: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
+    events: [
+      {
+        name: 'testt',
+        place: 'San Jose',
+        time: 'Noon',
+        date: '08/23/24'
+      },
+      {
+        name: 'testt',
+        place: 'San Jose',
+        time: 'Noon',
+        date: '08/23/24'
+      },
+      {
+        name: 'testt',
+        place: 'San Jose',
+        time: 'Noon',
+        date: '08/23/24'
+      },
+    ]
 
   }
-/*
+
   async componentWillMount() {
     let data = this.props.match.params.group
-    console.log(data)
-    data = await this.state.rootRef.child(`groups/${data}`).once('value');
-    let { name, organizer, owner, summary } = data.val();
-    this.setState({ name, organizer, owner, summary });
+    console.log(`DATA IS ${data}`)
+    try {
+      const { currentUser } = firebase.auth();
+      const { uid } = currentUser;
+      data = await this.state.rootRef.child(`groups/${data}`).once('value');
+      let { name, organizer, owner, summary } = data.val();
+      console.log(`${name} :: ${organizer} :: ${summary} :: ${owner}`)
+      this.setState({ name, organizer, owner, summary, uid });
+      console.log('set State')
+    } catch (e) {
+      console.log(e)
+    }
   }
-*/
+
   render() {
 
+    let { uid, owner } = this.state;
+
+    if (uid == owner) { console.log('yep')} else { console.log('yep')}
+    console.log(uid)
+    console.log(owner)
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: '#26C6DA' }}>
         <View style={styles.headerTop}>
           <TouchableOpacity
-            style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: 28}}
+            style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 28}}
           >
             <Link
               style={{ padding: 5, backgroundColor: '#0097A7', borderRadius: 40, marginLeft: 20}}
               to='/welcome'>
               <Text> Back </Text>
             </Link>
+
+            {
+              uid === owner ? (
+                <Link
+                  style={{ padding: 5, backgroundColor: '#0097A7', borderRadius: 40, marginRight: 20}}
+                  to='/welcome'>
+                  <Text> Admin Tools </Text>
+                </Link>
+              ) : (
+                <View />
+              )
+            }
           </TouchableOpacity>
         </View>
         <View style={styles.header}>
-          <View style={styles.bubble}></View>
+          <Text style={{ fontSize: 25, paddingTop: 10 }}>{this.state.name.substring(0, 25)}</Text>
         </View>
         <View style={styles.firstBox}>
-          <TextInput
-            style={styles.textInputOne}
-            placeholder={"Name"}
-            value={this.props.name}
-            onChangeText={() => {}}
-          />
-          <TextInput
-            style={styles.textInputOne}
-            placeholder={"Organizer"}
-            value={this.props.organizer}
-            onChangeText={() => {}}
-            />
+          <Text style={{maxWidth:'50%'}}> Organizer: {this.state.organizer.substring(0, 18)} </Text>
+          <Text style={{maxWidth: '50%'}}> Owner: {this.state.owner.substring(0, 18)} </Text>
         </View>
         <View style={styles.summaryBox}>
-          <TextInput
-            style={styles.sum}
-            placeholder={"Summary"}
-            multiline = {true}
-            value={this.props.summary}
-            onChangeText={() => {}}
-           />
+          <Text style={{alignSelf: 'center', paddingBottom: 10}}> Summary </Text>
+          <Text> {this.state.summary.substring(0, 300)}</Text>
         </View>
         <View style={styles.tBox}>
-          <ToggleSwitch
-            isOn={false}
-            onColor='#0097A7'
-            offColor='#26C6DA'
-            label='Public / Private'
-            labelStyle={{color: 'black', fontWeight: '700'}}
-            size='medium'
-            onToggle={() => {}}
+          <Text style={{alignSelf: 'center'}}> Upcoming Events </Text>
+            <FlatList
+              data={this.state.events}
+              renderItem={u =>
+                <Card containerStyle={{flex: 1, padding: 0}} >
+                    <ListItem
+                      key={ u.index }
+                      title={ u.item.name }
+                      subtitle={ u.item.place + " " + u.item.time + " " + u.item.date }
+                      containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
+                      titleStyle={{ color: 'black' }}
+                      subtitleStyle={{ color: '#0097A7' }}
+                      onPressRightIcon={() => {}}
+                    />
+                </Card>
+              }
             />
-
-            <TouchableOpacity
-              onPress={() => {}}
-              style={styles.button}>
-              <Text style={{fontWeight: 'bold'}}> Create </Text>
-            </TouchableOpacity>
+          <Text style={{alignSelf: 'center'}}> Past Events </Text>
+          <FlatList
+            data={this.state.events}
+            renderItem={u =>
+              <Card containerStyle={{flex: 1, padding: 0}} >
+                  <ListItem
+                    key={ u.index }
+                    title={ u.item.name }
+                    subtitle={ u.item.place + " " + u.item.time + " " + u.item.date }
+                    containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
+                    titleStyle={{ color: 'black' }}
+                    subtitleStyle={{ color: '#0097A7' }}
+                    onPressRightIcon={() => {}}
+                  />
+              </Card>
+            }
+          />
         </View>
       </View>
     )
@@ -125,8 +177,8 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#26C6DA',
-    height: '20%',
-    justifyContent: 'center',
+    height: '10%',
+    justifyContent: 'flex-start',
     alignItems: 'center'
   },
   bubble: {
@@ -137,7 +189,7 @@ const styles = StyleSheet.create({
   },
   firstBox: {
     backgroundColor: '#26C6DA',
-    height: '10%',
+    height: '8%',
     flexDirection: 'row',
     justifyContent: 'space-around'
   },
@@ -151,8 +203,8 @@ const styles = StyleSheet.create({
   summaryBox: {
     height: '20%',
     backgroundColor: '#26C6DA',
-    flexDirection: 'row',
-    justifyContent: 'space-around'
+    width: '80%',
+    alignSelf: 'center'
   },
   sum: {
     flex: 1,
@@ -162,10 +214,10 @@ const styles = StyleSheet.create({
     padding: 5
   },
   tBox: {
-    height: '40%',
+    height: '50%',
     backgroundColor: '#26C6DA',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'stretch'
   },
   button: {
     marginTop: 20,
@@ -177,5 +229,22 @@ const styles = StyleSheet.create({
   }
 })
 
+/*
+<Card containerStyle={{padding: 0}} >
+{
+  this.state.data.map((u, i) => (
+    <ListItem
+      key={ i }
+      title={ u[0].name }
+      subtitle={ u[0].summary.substring(0, 50) }
+      containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
+      titleStyle={{ color: 'black' }}
+      subtitleStyle={{ color: '#0097A7' }}
+      onPressRightIcon={() => this.pushNewGroup(u)}
+    />
+  ))
+}
+</Card>
+*/
 
 export default connect(mapStateToProps)(viewGroup);

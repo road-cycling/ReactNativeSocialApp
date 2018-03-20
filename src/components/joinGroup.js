@@ -28,17 +28,26 @@ class joinGroup extends Component {
 
   pushNewGroup = array => {
     let id = array[1]
-    //console.log(id)
+    console.log(id)
     this.props.history.push(`/getGroup/${id}`)
   }
 
   placeholdTextChange = debounce(async text => {
-    let data = await this.state.rootRef.child('groups').once('value');
-    data = data.val();
-    let keys = Object.keys(data);
-    let test = Object.values(data).map((item, index) => [item, keys[index]])
-    data = test.filter(item => item[0].name.includes(text) && item[0].isPublic === 1);
-    this.setState({ data })
+    try {
+      if (text != '') {
+        let data = await this.state.rootRef
+                      .child('groups')
+                      .orderByChild('lower_name')
+                      .startAt(text.toLowerCase())
+                      .endAt(`${text.toLowerCase()}~`)
+                      .once('value');
+        data = data.val();
+        let keys = Object.keys(data);
+        let test = Object.values(data).map((item, index) => [item, keys[index]])
+        data = test.filter(item => item[0].name.includes(text) && item[0].isPublic === 1);
+        this.setState({ data })
+      }
+    } catch (e) {}
   }, 1000);
 
 
@@ -67,23 +76,25 @@ class joinGroup extends Component {
           />
         </View>
         <View style={styles.mid}>
-          <ScrollView style={styles.scroll}>
-            <Card containerStyle={{padding: 0}} >
-            {
-              this.state.data.map((u, i) => (
-                <ListItem
-                  key={ i }
-                  title={ u[0].name }
-                  subtitle={ u[0].summary.substring(0, 50) }
-                  containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
-                  titleStyle={{ color: 'black' }}
-                  subtitleStyle={{ color: '#0097A7' }}
-                  onPressRightIcon={() => this.pushNewGroup(u)}
-                />
-              ))
-            }
-            </Card>
-          </ScrollView>
+          {this.state.data.length !== 0 ? (
+            <ScrollView style={styles.scroll}>
+              <Card containerStyle={{padding: 0}} >
+              {
+                this.state.data.map((u, i) => (
+                  <ListItem
+                    key={ i }
+                    title={ u[0].name }
+                    subtitle={ u[0].summary.substring(0, 50) }
+                    containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
+                    titleStyle={{ color: 'black' }}
+                    subtitleStyle={{ color: '#0097A7' }}
+                    onPressRightIcon={() => this.pushNewGroup(u)}
+                  />
+                ))
+              }
+              </Card>
+            </ScrollView>
+          ): ( <View /> )}
         </View>
 
 

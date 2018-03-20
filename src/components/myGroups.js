@@ -29,11 +29,19 @@ class myGroups extends Component {
       }
     }
 
+    pushNewGroup = array => {
+      let id = array.id
+      console.log('id is ' + id)
+      //console.log('id is ' + array.owner)
+      //console.log(array.owner)
+      this.props.history.push(`/getGroup/${id}`)
+    }
+
    async componentWillMount() {
      const rootRef = firebase.database().ref()
      const { currentUser } = firebase.auth();
-     //const { uid } = currentUser;
-     let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
+     const { uid } = currentUser;
+     //let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
      const userGroups = rootRef.child(`users`)
      const group = rootRef.child('groups')
      const users = [];
@@ -53,7 +61,7 @@ class myGroups extends Component {
         console.log(e)
       }
 
-    console.log(this.state);
+  //  console.log(this.state);
 
   }
 
@@ -71,30 +79,32 @@ class myGroups extends Component {
           <Text style={styles.headText}>My Groups</Text>
         </View>
         <View style={styles.mid}>
-          <ScrollView style={styles.scroll}>
-            <Card containerStyle={{padding: 0}} >
-              {
-                this.state.users.map((u, i) => (
-                  <ListItem
-                    key={ i }
-                    title={ u.name }
-                    subtitle={ u.summary.substring(0, 50) }
-                    containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
-                    titleStyle={{ color: 'black' }}
-                    subtitleStyle={{ color: '#0097A7' }}
-                    onPressRightIcon={data => console.log(u)}
-                  />
-                ))
-              }
-            </Card>
-          </ScrollView>
+          { this.state.users.length !== 0 ? (
+            <ScrollView style={styles.scroll}>
+              <Card containerStyle={{padding: 0}} >
+                {
+                  this.state.users.map((u, i) => (
+                    <ListItem
+                      key={ i }
+                      title={ u.name }
+                      subtitle={ u.summary.substring(0, 50) }
+                      containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
+                      titleStyle={{ color: 'black' }}
+                      subtitleStyle={{ color: '#0097A7' }}
+                      onPressRightIcon={() => this.pushNewGroup(u)}
+                    />
+                  ))
+                }
+              </Card>
+            </ScrollView>
+          ) : (<View />)
+         }
         </View>
-
-
       </View>
     );
   }
 }
+
 
 
 

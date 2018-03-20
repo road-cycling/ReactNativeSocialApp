@@ -92,7 +92,13 @@ class Login extends Component {
               {
                 this.props.loading
                 ?  <ActivityIndicator size="small" color="#0097A7" />
-                : <Text style={{color: '#FFF'}}> {this.props.authMethod === 0 ? 'Log In' : 'Sign Up'} </Text>
+                : <Text style={{color: '#FFF'}}>
+                    {
+                      this.props.authMethod === 0
+                      ? 'Log In'
+                      : 'Sign Up'
+                    }
+                  </Text>
               }
           </TouchableOpacity>
 

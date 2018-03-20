@@ -4,7 +4,8 @@ import {
   GROUP_CREATE_SUMMARY_CHANGED,
   GROUP_CREATE_PUBLIC_CHANGED,
   GROUP_CREATE_LOADING_CHANGED,
-  GROUP_CREATE_PRESS
+  GROUP_CREATE_PRESS,
+  GROUP_CREATE_SUCCESS
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -17,7 +18,7 @@ const INITIAL_STATE = {
 // 0 is private
 
 export default (state=INITIAL_STATE, action) => {
-  
+
   switch(action.type) {
 
     case GROUP_CREATE_NAME_CHANGED:
@@ -35,8 +36,11 @@ export default (state=INITIAL_STATE, action) => {
     case GROUP_CREATE_LOADING_CHANGED:
       return {...state, loading: action.payload}
 
+    case GROUP_CREATE_SUCCESS:
+      return {...INITIAL_STATE}
+
     case GROUP_CREATE_PRESS:
-      return {...state, INITIAL_STATE, loading: 'true'}
+      return {...state, loading: 'true'}
 
     default:
       return state;

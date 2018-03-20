@@ -18,6 +18,12 @@ import {
   Image as RNImage
 } from 'react-native'
 
+/*
+
+  TODO
+  CACHE IMAGES;
+
+*/
 
 class Welcome extends Component {
 

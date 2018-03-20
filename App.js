@@ -5,13 +5,18 @@ import { createStore, applyMiddleware } from 'redux'
 import { MemoryRouter, Route, Switch } from 'react-router-native'
 import reducers from './src/reducers'
 import firebase from 'firebase'
-import Login from './src/components/login'
-import Welcome from './src/components/welcome'
-import createGroup from './src/components/createGroup'
-import myGroups from './src/components/myGroups'
-import joinGroup from './src/components/joinGroup'
-import viewGroup from './src/components/viewGroup'
+
 import thunk from 'redux-thunk'
+
+import {
+  Login,
+  Welcome,
+  createGroup,
+  myGroups,
+  joinGroup,
+  viewGroup,
+  adminPanel
+} from './src/components'
 
 class App extends Component {
 
@@ -29,11 +34,13 @@ class App extends Component {
   }
 
   render() {
+
     return (
       <Provider store={createStore(reducers, {}, applyMiddleware(thunk))}>
         <MemoryRouter>
           <View style={{ flex: 1 }}>
             <Switch>
+              <Route path="/"               component={adminPanel} />
               <Route path="/"         exact component={Login} />
               <Route path="/welcome"        component={Welcome} />
               <Route path="/group"          component={createGroup} />
