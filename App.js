@@ -40,14 +40,14 @@ class App extends Component {
         <MemoryRouter>
           <View style={{ flex: 1 }}>
             <Switch>
-              <Route path="/"               component={adminPanel} />
               <Route path="/"         exact component={Login} />
               <Route path="/welcome"        component={Welcome} />
               <Route path="/group"          component={createGroup} />
               <Route path="/mygroups" exact component={myGroups} />
               <Route path="/joingroup"      component={joinGroup} />
               <Route path="/getGroup/:group" component={viewGroup} />
-            </Switch>
+              <Route path="/adminPanel/:group"  component={adminPanel} />
+            </Switch> 
           </View>
         </MemoryRouter>
       </Provider>
@@ -77,7 +77,15 @@ export default App;
 
 
 
-
+/*
+<Route path="/"               component={adminPanel} />
+<Route path="/"         exact component={Login} />
+<Route path="/welcome"        component={Welcome} />
+<Route path="/group"          component={createGroup} />
+<Route path="/mygroups" exact component={myGroups} />
+<Route path="/joingroup"      component={joinGroup} />
+<Route path="/getGroup/:group" component={viewGroup} />
+*/
 
 
 

@@ -22,6 +22,7 @@ import {
 class viewGroup extends Component {
 
   state = {
+    data: '',
     rootRef: firebase.database().ref(),
     name: 'PI KAPPA BETA ALPHA NETA',
     uid: '',
@@ -57,11 +58,11 @@ class viewGroup extends Component {
     try {
       const { currentUser } = firebase.auth();
       const { uid } = currentUser;
-      data = await this.state.rootRef.child(`groups/${data}`).once('value');
-      let { name, organizer, owner, summary } = data.val();
-      console.log(`${name} :: ${organizer} :: ${summary} :: ${owner}`)
-      this.setState({ name, organizer, owner, summary, uid });
-      console.log('set State')
+      let snap = await this.state.rootRef.child(`groups/${data}`).once('value');
+      let events = await this.state.rootRef.child(`events/${data}`).once('value');
+      console.log(events.val())
+      let { name, organizer, owner, summary } = snap.val();
+      this.setState({ name, organizer, owner, summary, uid, data });
     } catch (e) {
       console.log(e)
     }
@@ -71,9 +72,7 @@ class viewGroup extends Component {
 
     let { uid, owner } = this.state;
 
-    if (uid == owner) { console.log('yep')} else { console.log('yep')}
-    console.log(uid)
-    console.log(owner)
+
     return (
       <View style={{ flex: 1, backgroundColor: '#26C6DA' }}>
         <View style={styles.headerTop}>
@@ -90,7 +89,7 @@ class viewGroup extends Component {
               uid === owner ? (
                 <Link
                   style={{ padding: 5, backgroundColor: '#0097A7', borderRadius: 40, marginRight: 20}}
-                  to='/welcome'>
+                  to={`/adminPanel/${this.state.data}`}>
                   <Text> Admin Tools </Text>
                 </Link>
               ) : (

@@ -65,7 +65,11 @@ export const gCreate = (name, organizer, summary, isPublic) => {
       const { key } = response
       //console.log(key);
       await firebase.database().ref(`/users/${uid}`).push({ key })
-      await firebase.database().ref(`/events/${key}`).push({ event: ['Group Created', Date.now()]})
+      await firebase.database().ref(`/events/${key}`).push({
+        location: 'Group Created',
+        summary: 'Group Created',
+        chosenDate: new Date().toString()
+      })
       dispatch({ type: GROUP_CREATE_SUCCESS })
       return;
     } catch (e) { console.log(e) }

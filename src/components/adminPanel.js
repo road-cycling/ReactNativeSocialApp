@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import ToggleSwitch from 'toggle-switch-react-native'
 import { Link } from 'react-router-native'
 
+import firebase from 'firebase';
+
 
 import {
   StyleSheet,
@@ -21,15 +23,43 @@ import {
 class adminPanel extends Component {
 
   state = {
-    chosenDate: new Date()
-  }
-
-  setDate = (chosenDate) => {
-    this.setState({ chosenDate })
+    chosenDate: new Date(),
+    location: "",
+    summary: "",
+    data: ""
   }
 
   componentWillMount() {
-    let tempID = '-L84RWUQJeBFhTv80E7g';
+    let data = this.props.match.params.group
+    this.setState({ data })
+  }
+
+  setDate = (chosenDate) => {
+    console.log(`setting date ${chosenDate}`)
+    this.setState({ chosenDate })
+    console.log(this.state.chosenDate)
+  }
+
+  setLocation = (location) => {
+    this.setState({ location })
+  }
+
+  setSummary = (summary) => {
+    this.setState({ summary })
+  }
+
+  onCreateEvent = async () => {
+    let { location, summary, chosenDate } = this.state;
+    console.log(`${summary} :: ${location} :: ${chosenDate}`)
+    //let tempID = '-L84RWUQJeBFhTv80E7g';
+
+    const response = await firebase.database().ref(`/events/${this.state.data}`)
+      .push({
+        location,
+        summary,
+        chosenDate: chosenDate.toString()
+      })
+      this.props.history.push(`/getGroup/${this.state.data}`)
   }
 
   render() {
@@ -54,7 +84,7 @@ class adminPanel extends Component {
             style={styles.textInputOne}
             placeholder={"Location"}
             value={this.props.organizer}
-            onChangeText={() => {}}
+            onChangeText={location => this.setLocation(location)}
             />
         </View>
         <View style={styles.summaryBox}>
@@ -63,22 +93,22 @@ class adminPanel extends Component {
             placeholder={"Summary"}
             multiline = {true}
             value={this.props.summary}
-            onChangeText={() => {}}
+            onChangeText={summary => this.setSummary(summary)}
            />
         </View>
         <View style={styles.rest}>
-        <DatePickerIOS
-date={this.state.chosenDate}
-onDateChange={this.setDate}
-/>
+          <DatePickerIOS
+            date={this.state.chosenDate}
+            onDateChange={date => this.setDate(date)}
+          />
 
         </View>
         <View style={styles.tBox}>
             <TouchableOpacity
-              onPress={() => {}}
+              onPress={() => this.onCreateEvent()}
               style={styles.button}>
                 {
-                  this.props.loading === 'true'
+                  'fix' !== 'fix'
                   ? <ActivityIndicator size="small" color="#0097A7" />
                   : <Text style={{fontWeight: 'bold'}}> Create </Text>
                 }
