@@ -15,7 +15,8 @@ import {
   myGroups,
   joinGroup,
   viewGroup,
-  adminPanel
+  createEvent,
+  newAdminPanel
 } from './src/components'
 
 class App extends Component {
@@ -46,8 +47,9 @@ class App extends Component {
               <Route path="/mygroups" exact component={myGroups} />
               <Route path="/joingroup"      component={joinGroup} />
               <Route path="/getGroup/:group" component={viewGroup} />
-              <Route path="/adminPanel/:group"  component={adminPanel} />
-            </Switch> 
+              <Route path="/createEvent/:group"  component={createEvent} />
+              <Route path="/adminPanel/:group" component={newAdminPanel} />
+            </Switch>
           </View>
         </MemoryRouter>
       </Provider>

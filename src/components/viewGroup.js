@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import ToggleSwitch from 'toggle-switch-react-native'
 import { Link } from 'react-router-native'
 import firebase from 'firebase'
+import '@firebase/firestore'
 import { Card, ListItem, Button, SearchBar } from 'react-native-elements'
 
 import {
@@ -23,11 +24,12 @@ class viewGroup extends Component {
 
   state = {
     data: '',
-    rootRef: firebase.database().ref(),
+    firestore: '',
     name: 'PI KAPPA BETA ALPHA NETA',
     uid: '',
     organizer: 'test value',
     owner: 'Nathan Kamm',
+    displayName: 'Baz Foo',
     summary: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
     events: [
       {
@@ -52,17 +54,21 @@ class viewGroup extends Component {
 
   }
 
+
   async componentWillMount() {
-    let data = this.props.match.params.group
-    console.log(`DATA IS ${data}`)
+    let { match: { params: { group } } } = this.props
+
     try {
-      const { currentUser } = firebase.auth();
-      const { uid } = currentUser;
-      let snap = await this.state.rootRef.child(`groups/${data}`).once('value');
-      let events = await this.state.rootRef.child(`events/${data}`).once('value');
-      console.log(events.val())
-      let { name, organizer, owner, summary } = snap.val();
-      this.setState({ name, organizer, owner, summary, uid, data });
+      const { currentUser: { uid } } = firebase.auth();
+
+      //this is terrible
+      let data = await firebase.firestore()
+            .collection('groups')
+            .doc(group)
+
+      data = await data.get()
+      let { name, organizer, owner, summary, displayName } = data.data();
+      this.setState({ name, organizer, owner, summary, uid, displayName, data: data.id });
     } catch (e) {
       console.log(e)
     }
@@ -103,7 +109,7 @@ class viewGroup extends Component {
         </View>
         <View style={styles.firstBox}>
           <Text style={{maxWidth:'50%'}}> Organizer: {this.state.organizer.substring(0, 18)} </Text>
-          <Text style={{maxWidth: '50%'}}> Owner: {this.state.owner.substring(0, 18)} </Text>
+          <Text style={{maxWidth: '50%'}}> Owner: {this.state.displayName.substring(0, 18)} </Text>
         </View>
         <View style={styles.summaryBox}>
           <Text style={{alignSelf: 'center', paddingBottom: 10}}> Summary </Text>

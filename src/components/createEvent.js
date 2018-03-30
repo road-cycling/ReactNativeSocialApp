@@ -4,7 +4,7 @@ import ToggleSwitch from 'toggle-switch-react-native'
 import { Link } from 'react-router-native'
 
 import firebase from 'firebase';
-
+import '@firebase/firestore'
 
 import {
   StyleSheet,
@@ -20,7 +20,7 @@ import {
 
 
 /* <DatePickerIOS date={this.state.chosenDate} onDateChange={this.setDate} /> */
-class adminPanel extends Component {
+class createEvent extends Component {
 
   state = {
     chosenDate: new Date(),
@@ -31,6 +31,7 @@ class adminPanel extends Component {
 
   componentWillMount() {
     let data = this.props.match.params.group
+    console.log(data)
     this.setState({ data })
   }
 
@@ -50,16 +51,18 @@ class adminPanel extends Component {
 
   onCreateEvent = async () => {
     let { location, summary, chosenDate } = this.state;
-    console.log(`${summary} :: ${location} :: ${chosenDate}`)
-    //let tempID = '-L84RWUQJeBFhTv80E7g';
-
-    const response = await firebase.database().ref(`/events/${this.state.data}`)
-      .push({
-        location,
-        summary,
-        chosenDate: chosenDate.toString()
-      })
-      this.props.history.push(`/getGroup/${this.state.data}`)
+    //console.log(`${location} ${summary} ${chosenDate} ${chosenDate.toString()}`)
+    await firebase
+          .firestore()
+          .collection('groups')
+          .doc(this.state.data)
+          .collection('events')
+          .add({
+              location,
+              summary,
+              chosenDate: chosenDate.toString()
+          })
+    this.props.history.push(`/adminPanel/${this.state.data}`)
   }
 
   render() {
@@ -188,4 +191,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default connect(mapStateToProps)(adminPanel);
+export default connect(mapStateToProps)(createEvent);

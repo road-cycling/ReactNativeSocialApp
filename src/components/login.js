@@ -43,7 +43,6 @@ class Login extends Component {
             <TouchableHighlight onPress={() => this.onSetImage()}>
               <Image
                 style={this.props.error == '' ? styles.bubble : styles.bubbleRed}
-
               />
             </TouchableHighlight>
           </View>

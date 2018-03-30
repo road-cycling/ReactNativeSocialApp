@@ -3,6 +3,7 @@ import { Card, ListItem, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-native'
 import firebase from 'firebase';
+import '@firebase/firestore'
 //import { graphql, buildSchema } from 'graphql'
 import {
   View,
@@ -29,37 +30,27 @@ class myGroups extends Component {
       }
     }
 
-    pushNewGroup = array => {
-      let id = array.id
-      console.log('id is ' + id)
-      //console.log('id is ' + array.owner)
-      //console.log(array.owner)
+    pushNewGroup = id => {
       this.props.history.push(`/getGroup/${id}`)
     }
 
    async componentWillMount() {
-     const rootRef = firebase.database().ref()
-     const { currentUser } = firebase.auth();
-     const { uid } = currentUser;
-     //let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
-     const userGroups = rootRef.child(`users`)
-     const group = rootRef.child('groups')
-     const users = [];
+     let firestore = firebase.firestore()
+     let items = [];
+     let { currentUser: { uid } } = firebase.auth();
 
-      try {
-        const groupsForUser = await userGroups.child(uid).once('value')
-        const keys = Object.values(groupsForUser.val())
-        for (let i = 0; i < keys.length; i++) {
-          let groupsRef = rootRef.child(`/groups/${keys[i].key}`)
-          let groupData = await groupsRef.once('value');
-          let data = groupData.val();
-          data.id = keys[i].key
-          users.push(data);
-        }
-        this.setState({ users });
-      } catch (e) {
-        console.log(e)
-      }
+     let data = await firestore
+       .collection('users')
+       .doc(uid)
+       .collection('groupsApartOf')
+      data = await data.get()
+
+       data.forEach(async item => {
+         items.push(item.data());
+       })
+
+       this.setState({ users: items });
+       console.log(this.state.users.data)
   }
 
 
@@ -85,11 +76,11 @@ class myGroups extends Component {
                     <ListItem
                       key={ i }
                       title={ u.name }
-                      subtitle={ u.summary.substring(0, 50) }
+                      subtitle={ u.organizer.substring(0, 50) }
                       containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
                       titleStyle={{ color: 'black' }}
                       subtitleStyle={{ color: '#0097A7' }}
-                      onPressRightIcon={() => this.pushNewGroup(u)}
+                      onPressRightIcon={() => this.pushNewGroup(u.groupID)}
                     />
                   ))
                 }
@@ -102,8 +93,6 @@ class myGroups extends Component {
     );
   }
 }
-
-
 
 
 /*trying FLEX now */

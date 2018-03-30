@@ -3,6 +3,7 @@ import { Card, ListItem, Button, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import debounce from 'debounce'
 import { Link } from 'react-router-native'
+import '@firebase/firestore'
 import firebase from 'firebase';
 
 import {
@@ -19,33 +20,30 @@ import {
 class joinGroup extends Component {
   state = {
     data: [],
-    rootRef : firebase.database().ref()
+    //firestore : firebase.firestore() //terrible
   }
   /*
   updateText = innerText => {
     this.setState({ innerText })
   }*/
 
-  pushNewGroup = array => {
-    let id = array[1]
-    console.log(id)
+  pushNewGroup = id => {
     this.props.history.push(`/getGroup/${id}`)
   }
 
   placeholdTextChange = debounce(async text => {
+    //let firebase.firestore()
+    // TERRIBLE!!!!
     try {
+      let result = [];
       if (text != '') {
-        let data = await this.state.rootRef
-                      .child('groups')
-                      .orderByChild('lower_name')
-                      .startAt(text.toLowerCase())
-                      .endAt(`${text.toLowerCase()}~`)
-                      .once('value');
-        data = data.val();
-        let keys = Object.keys(data);
-        let test = Object.values(data).map((item, index) => [item, keys[index]])
-        data = test.filter(item => item[0].name.includes(text) && item[0].isPublic === 1);
-        this.setState({ data })
+        let data = await firebase.firestore()
+                          .collection('groups')
+                          .where("name", "==", text)
+                          .where("isPublic", "==", 1)
+        data = await data.get()
+        data.forEach(async item => result.push([item.data(), item.id]))
+        this.setState({ data: result })
       }
     } catch (e) {}
   }, 1000);
@@ -88,7 +86,7 @@ class joinGroup extends Component {
                     containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
                     titleStyle={{ color: 'black' }}
                     subtitleStyle={{ color: '#0097A7' }}
-                    onPressRightIcon={() => this.pushNewGroup(u)}
+                    onPressRightIcon={() => this.pushNewGroup(u[1])}
                   />
                 ))
               }
@@ -141,3 +139,8 @@ function mapStateToProps() {
 
 export default connect(mapStateToProps
 )(joinGroup);
+
+/*
+boo!
+Thanks for the feedback! These query improvements (OR, IN / CONTAINS, and LIKE queries) are all on our radar for future Cloud Firestore query improvements. I'm closing this issue as it's not specific to the JS SDK, but we know that these features would be very useful and there's a lot of demand for them. We intend to address them in the future as we continue to evolve Firestore's query functionality. Thanks!
+*/
