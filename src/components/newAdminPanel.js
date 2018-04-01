@@ -22,7 +22,6 @@ import { List, ListItem } from 'react-native-elements'
 
 
 
-/* <DatePickerIOS date={this.state.chosenDate} onDateChange={this.setDate} /> */
 class newAdminPanel extends Component {
 
   state = {
@@ -33,8 +32,8 @@ class newAdminPanel extends Component {
   }
 
   componentWillMount() {
-    //let data = this.props.match.params.group
-    let data = '3pDZXnFQ6T2hcKBJvgkq'
+    let data = this.props.match.params.group
+    //let data = '3pDZXnFQ6T2hcKBJvgkq'
     this.setState({ data })
   }
 
@@ -42,21 +41,14 @@ class newAdminPanel extends Component {
     if (data === 'event') {
       this.props.history.push(`/createEvent/${this.state.data}`)
     }
+
+    if (data === 'members') {
+      this.props.history.push(`/members/${this.state.data}`)
+    }
   }
 
   render() {
 
-    const list = [
-      {
-        title: 'Create Event',
-        move: 'event',
-        icon: 'av-timer'
-      },
-      {
-        title: 'Trips',
-        icon: 'flight-takeoff'
-      },
-  ]
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.headerTop}>

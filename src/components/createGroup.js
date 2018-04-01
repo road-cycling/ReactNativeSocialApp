@@ -47,7 +47,8 @@ class createGroup extends Component {
         const { name, organizer, summary, isPublic } = this.props
         return this.props.gCreate(name, organizer, summary, isPublic)
           .then(() => this.props.history.push('/welcome'))
-
+          .catch(err => console.log(err))
+ 
       default:
         console.log('error')
     }
@@ -103,7 +104,7 @@ class createGroup extends Component {
             size='medium'
             onToggle={boolean => this.onChange(boolean, 'toggle')}
             />
- 
+
             <TouchableOpacity
               onPress={() => this.onChange(null, 'create')}
               style={styles.button}>

@@ -109,7 +109,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
-    console.log(state.loginReducer)
+    //console.log(state.loginReducer)
   let {
     authMethod,
     email,

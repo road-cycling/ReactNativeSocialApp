@@ -16,13 +16,15 @@ import {
   joinGroup,
   viewGroup,
   createEvent,
-  newAdminPanel
+  newAdminPanel,
+  viewMembers
 } from './src/components'
 
 class App extends Component {
 
   componentWillMount() {
-    console.log(myGroups)
+    //console.log(myGroups)
+    /*
     const config = {
       apiKey: "AIzaSyBwTS9J6NvkQLIIUm6cr_dB1OBQVSYeAEU",
       authDomain: "ssuproject-4980c.firebaseapp.com",
@@ -30,7 +32,17 @@ class App extends Component {
       projectId: "ssuproject-4980c",
       storageBucket: "ssuproject-4980c.appspot.com",
       messagingSenderId: "289341777797"
+    };*/
+
+    var config = {
+      apiKey: "AIzaSyBpjJRLWYAaZvxjGqoTj5OIMagA_6aWJNg",
+      authDomain: "dolphons-b45a8.firebaseapp.com",
+      databaseURL: "https://dolphons-b45a8.firebaseio.com",
+      projectId: "dolphons-b45a8",
+      storageBucket: "dolphons-b45a8.appspot.com",
+      messagingSenderId: "650827752725"
     };
+//firebase.initializeApp(config);
     firebase.initializeApp(config);
   }
 
@@ -40,7 +52,7 @@ class App extends Component {
       <Provider store={createStore(reducers, {}, applyMiddleware(thunk))}>
         <MemoryRouter>
           <View style={{ flex: 1 }}>
-            <Switch>
+            <Switch>  
               <Route path="/"         exact component={Login} />
               <Route path="/welcome"        component={Welcome} />
               <Route path="/group"          component={createGroup} />
@@ -49,6 +61,7 @@ class App extends Component {
               <Route path="/getGroup/:group" component={viewGroup} />
               <Route path="/createEvent/:group"  component={createEvent} />
               <Route path="/adminPanel/:group" component={newAdminPanel} />
+              <Route path="/members/:group"   component={viewMembers} />
             </Switch>
           </View>
         </MemoryRouter>
