@@ -13,7 +13,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  ActivityIndicator,
+  ActivityIndicator, 
   TouchableHighlight,
   FlatList
 } from 'react-native'
@@ -31,27 +31,24 @@ class viewGroup extends Component {
     owner: 'Nathan Kamm',
     displayName: 'Baz Foo',
     summary: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
-    events: [
+    upcomingEvents: [
       {
-        name: 'testt',
-        place: 'San Jose',
-        time: 'Noon',
-        date: '08/23/24'
+        summary: 'testt',
+        location: 'San Jose',
+        chosenDate: '08/23/24'
       },
       {
-        name: 'testt',
-        place: 'San Jose',
-        time: 'Noon',
-        date: '08/23/24'
+        summary: 'testt',
+        location: 'San Jose',
+        chosenDate: '08/23/24'
       },
       {
-        name: 'testt',
-        place: 'San Jose',
-        time: 'Noon',
-        date: '08/23/24'
+        summary: 'testt',
+        location: 'San Jose',
+        chosenDate: '08/23/24'
       },
-    ]
-
+    ],
+    pastEvents: []
   }
 
 
@@ -61,17 +58,43 @@ class viewGroup extends Component {
     try {
       const { currentUser: { uid } } = firebase.auth();
 
-      //this is terrible
       let data = await firebase.firestore()
             .collection('groups')
             .doc(group)
 
+
+      let events = this.getGroupEvents(data)
       data = await data.get()
       let { name, organizer, owner, summary, displayName } = data.data();
       this.setState({ name, organizer, owner, summary, uid, displayName, data: data.id });
+
+      await events
     } catch (e) {
       console.log(e)
     }
+  }
+
+  async getGroupEvents(data) {
+    let groupData = [], upcomingEvents = [], pastEvents = []
+
+    data = await data.collection('events').get()
+    data.forEach(item => groupData.push(item.data()))
+
+    let l = new Date()
+    for (let i = 0; i < groupData.length; i++) {
+      let otherDate = new Date(groupData[i].chosenDate)
+      if (l > otherDate) {
+        pastEvents.push(groupData[i])
+      } else {
+        upcomingEvents.push(groupData[i])
+      }
+    }
+
+
+    this.setState({
+      upcomingEvents,
+      pastEvents
+    })
   }
 
   render() {
@@ -118,13 +141,13 @@ class viewGroup extends Component {
         <View style={styles.tBox}>
           <Text style={{alignSelf: 'center'}}> Upcoming Events </Text>
             <FlatList
-              data={this.state.events}
+              data={this.state.upcomingEvents}
               renderItem={u =>
                 <Card containerStyle={{flex: 1, padding: 0}} >
                     <ListItem
                       key={ u.index }
-                      title={ u.item.name }
-                      subtitle={ u.item.place + " " + u.item.time + " " + u.item.date }
+                      title={ u.item.summary }
+                      subtitle={ u.item.location + " " + u.item.chosenDate }
                       containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
                       titleStyle={{ color: 'black' }}
                       subtitleStyle={{ color: '#0097A7' }}
@@ -135,13 +158,13 @@ class viewGroup extends Component {
             />
           <Text style={{alignSelf: 'center'}}> Past Events </Text>
           <FlatList
-            data={this.state.events}
+            data={this.state.pastEvents}
             renderItem={u =>
               <Card containerStyle={{flex: 1, padding: 0}} >
                   <ListItem
                     key={ u.index }
-                    title={ u.item.name }
-                    subtitle={ u.item.place + " " + u.item.time + " " + u.item.date }
+                    title={ u.item.summary }
+                    subtitle={ u.item.location + " " + u.item.chosenDate }
                     containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
                     titleStyle={{ color: 'black' }}
                     subtitleStyle={{ color: '#0097A7' }}
@@ -158,7 +181,6 @@ class viewGroup extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state.createGroupReducer)
   let {
     name,
     organizer,

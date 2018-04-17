@@ -49,6 +49,17 @@ class newAdminPanel extends Component {
 
   render() {
 
+  const dta = [
+    {
+      title: 'Users',
+      move: 'members'
+    },
+    {
+      title: 'Create Event',
+      move: 'event'
+    }
+  ]
+
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.headerTop}>
@@ -65,7 +76,7 @@ class newAdminPanel extends Component {
         <View style={styles.middle}>
         <List>
           {
-            list.map((item, i) => (
+            dta.map((item, i) => (
               <ListItem
                 key={i}
                 title={item.title}
