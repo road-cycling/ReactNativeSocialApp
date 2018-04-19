@@ -55,7 +55,7 @@ export const gCreate = (name, organizer, summary, isPublic) => {
   return async dispatch => {
     try {
       dispatch({ type: GROUP_CREATE_PRESS })
-
+      /* this needs to be batched */
       const resp = await firestore.collection('groups')
             .add({
               name,

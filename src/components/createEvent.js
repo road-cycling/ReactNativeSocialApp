@@ -19,7 +19,6 @@ import {
 } from 'react-native'
 
 
-/* <DatePickerIOS date={this.state.chosenDate} onDateChange={this.setDate} /> */
 class createEvent extends Component {
 
   state = {
@@ -51,7 +50,7 @@ class createEvent extends Component {
 
   onCreateEvent = async () => {
     let { location, summary, chosenDate } = this.state;
-    //console.log(`${location} ${summary} ${chosenDate} ${chosenDate.toString()}`)
+
     await firebase
           .firestore()
           .collection('groups')

@@ -42,6 +42,7 @@ class joinGroup extends Component {
                           .where("name", "==", text)
                           .where("isPublic", "==", 1)
         data = await data.get()
+        //again why is this async /.\
         data.forEach(async item => result.push([item.data(), item.id]))
         this.setState({ data: result })
       }

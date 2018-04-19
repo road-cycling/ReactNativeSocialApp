@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import ToggleSwitch from 'toggle-switch-react-native'
 import { Link } from 'react-router-native'
 import firebase from 'firebase'
+import { AdminButton } from './button'
 import '@firebase/firestore'
 import { Card, ListItem, Button, SearchBar } from 'react-native-elements'
 
@@ -13,35 +14,27 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  ActivityIndicator, 
+  ActivityIndicator,
   TouchableHighlight,
   FlatList
 } from 'react-native'
 
 
-
 class viewGroup extends Component {
 
   state = {
+    inGroup: 0,
     data: '',
     firestore: '',
-    name: 'PI KAPPA BETA ALPHA NETA',
+    name: '',
     uid: '',
-    organizer: 'test value',
-    owner: 'Nathan Kamm',
-    displayName: 'Baz Foo',
-    summary: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`,
+    organizer: '',
+    owner: '',
+    displayName: '',
+    loading: true,
+    changedStatus: false,
+    summary: '',
     upcomingEvents: [
-      {
-        summary: 'testt',
-        location: 'San Jose',
-        chosenDate: '08/23/24'
-      },
-      {
-        summary: 'testt',
-        location: 'San Jose',
-        chosenDate: '08/23/24'
-      },
       {
         summary: 'testt',
         location: 'San Jose',
@@ -53,10 +46,17 @@ class viewGroup extends Component {
 
 
   async componentWillMount() {
-    let { match: { params: { group } } } = this.props
+    //hotfix
+    //let { match: { params: { group } } } = this.props
+    //coo
 
     try {
-      const { currentUser: { uid } } = firebase.auth();
+      //hotfix
+      //const { currentUser: { uid } } = firebase.auth();
+      let group = '3pDZXnFQ6T2hcKBJvgkq'
+      let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
+
+      console.log(`group is and uid is ${group} :: uid ${uid}`)
 
       let data = await firebase.firestore()
             .collection('groups')
@@ -66,11 +66,87 @@ class viewGroup extends Component {
       let events = this.getGroupEvents(data)
       data = await data.get()
       let { name, organizer, owner, summary, displayName } = data.data();
-      this.setState({ name, organizer, owner, summary, uid, displayName, data: data.id });
+      this.setState({
+        name,
+        organizer,
+        owner,
+        summary,
+        uid,
+        displayName,
+        data: data.id,
+        loading: false
+      });
 
       await events
+      this.isMember()
     } catch (e) {
       console.log(e)
+    }
+  }
+
+  leaveGroup = async () => {
+    if (!this.state.changedStatus) {
+      this.setState({ changedStatus: true})
+
+      console.log('Leave GROUP')
+      //now we leave the group
+      let group = '3pDZXnFQ6T2hcKBJvgkq'
+      let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
+
+      //delete user from group reference
+      let newData = await firebase.firestore()
+                        .collection('groups')
+                        .doc(group)
+                        .collection('users')
+                      /*  .where("userID", "==", uid)*/
+                        .where("userID", "==", "asdf")
+                        .get()
+
+      newData.forEach(item => item.ref.delete())
+
+      //now we need to delete group reference from user
+      let userRef = await firebase.firestore()
+                      .collection('users')
+                      .doc(uid)
+                      .collection('groupsApartOf')
+                    /*.where("groupID", "==", "thisGroupID") */
+                      .where("groupID", "==", "deleteme")
+                      .get()
+
+      userRef.forEach(item => item.ref.delete())
+    }
+  }
+
+  joinGroup = () => {
+    if (!this.state.changedStatus) {
+      this.setState({ changedStatus: true })
+      console.log('Join GROUP')
+
+      let group = '3pDZXnFQ6T2hcKBJvgkq'
+      let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
+
+
+      const add = await firestore.collection('users')
+          .doc(uid)
+          .collection('groupsApartOf')
+          .add({
+            groupID: group,
+            name: this.state.name,
+            organizer: "fooBaz"
+           });
+
+      await firestore.collection('groups')
+          .doc(group)
+          .collection('users')
+          .add({
+            displayName: "ADD",
+            userID: uid,
+            owner: false,
+            admin: false,
+            deleteID: 'Dont need this no more'
+          })
+
+
     }
   }
 
@@ -90,17 +166,42 @@ class viewGroup extends Component {
       }
     }
 
-
+    //async set state?!?!
     this.setState({
       upcomingEvents,
       pastEvents
     })
   }
 
+  async isMember() {
+
+    //let { match: { params: { group } } } = this.props
+    //let { currentUser: { uid } } = firebase.auth();
+    //hotfix~
+    let group = '3pDZXnFQ6T2hcKBJvgkq'
+    let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
+
+    //bad already destructure elsewhere...
+    //console.log(`groups is ${group}`)
+
+    let newData = await firebase.firestore()
+                      .collection('groups')
+                      .doc(group)
+                      .collection('users')
+                      .where("userID", "==", uid)
+                    //  .where("isPublic", "==", 1)
+    let inGroup = await newData.get()
+    //console.log(inGroup.id)
+    //console.log(inGroup.size)
+    this.setState({ inGroup: inGroup.size })
+
+    //console.log(this.state)
+  }
+
   render() {
 
-    let { uid, owner } = this.state;
-
+    let { uid, owner, inGroup } = this.state;
+    //typescript looks really attractive rn
 
     return (
       <View style={{ flex: 1, backgroundColor: '#26C6DA' }}>
@@ -113,35 +214,55 @@ class viewGroup extends Component {
               to='/welcome'>
               <Text> Back </Text>
             </Link>
-
-            {
-              uid === owner ? (
-                <Link
-                  style={{ padding: 5, backgroundColor: '#0097A7', borderRadius: 40, marginRight: 20}}
-                  to={`/adminPanel/${this.state.data}`}>
-                  <Text> Admin Tools </Text>
-                </Link>
-              ) : (
-                <View />
-              )
-            }
+            <AdminButton
+                ownerUID={owner}
+                userUID={uid}
+                inGroup={inGroup}
+                joinGroup={this.joinGroup}
+                leaveGroup={this.leaveGroup}
+                linkData={"fix me"}
+            />
           </TouchableOpacity>
         </View>
-        <View style={styles.header}>
-          <Text style={{ fontSize: 25, paddingTop: 10 }}>{this.state.name.substring(0, 25)}</Text>
-        </View>
-        <View style={styles.firstBox}>
-          <Text style={{maxWidth:'50%'}}> Organizer: {this.state.organizer.substring(0, 18)} </Text>
-          <Text style={{maxWidth: '50%'}}> Owner: {this.state.displayName.substring(0, 18)} </Text>
-        </View>
-        <View style={styles.summaryBox}>
-          <Text style={{alignSelf: 'center', paddingBottom: 10}}> Summary </Text>
-          <Text> {this.state.summary.substring(0, 300)}</Text>
-        </View>
-        <View style={styles.tBox}>
-          <Text style={{alignSelf: 'center'}}> Upcoming Events </Text>
+      {
+        this.state.loading === true
+        ? ( <ActivityIndicator
+            style={{flex: 1}}
+          /> )
+        : (
+          <View>
+           <View style={styles.header}>
+            <Text style={{ fontSize: 25, paddingTop: 10 }}>{this.state.name.substring(0, 25)}</Text>
+          </View>
+          <View style={styles.firstBox}>
+            <Text style={{maxWidth:'50%'}}> Organizer: {this.state.organizer.substring(0, 18)} </Text>
+            <Text style={{maxWidth: '50%'}}> Owner: {this.state.displayName.substring(0, 18)} </Text>
+          </View>
+          <View style={styles.summaryBox}>
+            <Text style={{alignSelf: 'center', paddingBottom: 10}}> Summary </Text>
+            <Text> {this.state.summary.substring(0, 300)}</Text>
+          </View>
+          <View style={styles.tBox}>
+            <Text style={{alignSelf: 'center'}}> { this.state.upcomingEvents.length == 0 ? "" : "Upcoming Events" } </Text>
+              <FlatList
+                data={this.state.upcomingEvents}
+                renderItem={u =>
+                  <Card containerStyle={{flex: 1, padding: 0}} >
+                      <ListItem
+                        key={ u.index }
+                        title={ u.item.summary }
+                        subtitle={ u.item.location + " " + u.item.chosenDate }
+                        containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
+                        titleStyle={{ color: 'black' }}
+                        subtitleStyle={{ color: '#0097A7' }}
+                        onPressRightIcon={() => {}}
+                      />
+                  </Card>
+                }
+              />
+            <Text style={{alignSelf: 'center'}}> { this.state.pastEvents.length == 0 ? "" : "Past Events" } </Text>
             <FlatList
-              data={this.state.upcomingEvents}
+              data={ this.state.pastEvents}
               renderItem={u =>
                 <Card containerStyle={{flex: 1, padding: 0}} >
                     <ListItem
@@ -156,24 +277,10 @@ class viewGroup extends Component {
                 </Card>
               }
             />
-          <Text style={{alignSelf: 'center'}}> Past Events </Text>
-          <FlatList
-            data={this.state.pastEvents}
-            renderItem={u =>
-              <Card containerStyle={{flex: 1, padding: 0}} >
-                  <ListItem
-                    key={ u.index }
-                    title={ u.item.summary }
-                    subtitle={ u.item.location + " " + u.item.chosenDate }
-                    containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
-                    titleStyle={{ color: 'black' }}
-                    subtitleStyle={{ color: '#0097A7' }}
-                    onPressRightIcon={() => {}}
-                  />
-              </Card>
-            }
-          />
-        </View>
+          </View>
+          </View>
+        )
+      }
       </View>
     )
   }
@@ -256,22 +363,6 @@ const styles = StyleSheet.create({
   }
 })
 
-/*
-<Card containerStyle={{padding: 0}} >
-{
-  this.state.data.map((u, i) => (
-    <ListItem
-      key={ i }
-      title={ u[0].name }
-      subtitle={ u[0].summary.substring(0, 50) }
-      containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
-      titleStyle={{ color: 'black' }}
-      subtitleStyle={{ color: '#0097A7' }}
-      onPressRightIcon={() => this.pushNewGroup(u)}
-    />
-  ))
-}
-</Card>
-*/
+
 
 export default connect(mapStateToProps)(viewGroup);

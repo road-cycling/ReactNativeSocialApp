@@ -48,7 +48,7 @@ class createGroup extends Component {
         return this.props.gCreate(name, organizer, summary, isPublic)
           .then(() => this.props.history.push('/welcome'))
           .catch(err => console.log(err))
- 
+
       default:
         console.log('error')
     }
@@ -205,5 +205,6 @@ export default connect(mapStateToProps,
   gSummaryChanged,
   gPublicChanged,
   gLoadingChanged,
-  gCreate }
+  gCreate
+ }
 )(createGroup);

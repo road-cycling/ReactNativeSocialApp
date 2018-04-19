@@ -34,6 +34,7 @@ class viewMembers extends Component {
   async componentWillMount() {
     let firestore = firebase.firestore()
     let data = this.props.match.params.group
+
     //let data = 'chXdAIA6gJiH6spIOmxV'
     ///this.setState({ data })
     let items = []
@@ -44,6 +45,7 @@ class viewMembers extends Component {
 
     res = await res.get()
     res.forEach(async item => {
+      //why is this async???....
       items.push(item.data())
     //  console.log(item.data())
     })

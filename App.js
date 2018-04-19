@@ -53,6 +53,7 @@ class App extends Component {
         <MemoryRouter>
           <View style={{ flex: 1 }}>
             <Switch>
+              <Route path="/" component={viewGroup} />
               <Route path="/"         exact component={Login} />
               <Route path="/welcome"        component={Welcome} />
               <Route path="/group"          component={createGroup} />
