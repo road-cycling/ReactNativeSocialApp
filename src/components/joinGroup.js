@@ -67,6 +67,7 @@ class joinGroup extends Component {
           lightTheme
           containerStyle={{ backgroundColor: '#00BCD4'}}
           inputStyle={{ backgroundColor: '#0097A7', color: 'white' }}
+          autoCapitalize={'none'}
           placeholderTextColor={'white'}
           onChangeText={(text) => this.placeholdTextChange(text)}
           onClearText={() => {}}

@@ -23,6 +23,8 @@ import {
 class viewGroup extends Component {
 
   state = {
+    groupID: '',
+    currentUser: '',
     inGroup: 0,
     data: '',
     firestore: '',
@@ -47,16 +49,24 @@ class viewGroup extends Component {
 
   async componentWillMount() {
     //hotfix
-    //let { match: { params: { group } } } = this.props
+    let { match: { params: { group } } } = this.props
     //coo
+
+    this.setState({
+      groupID: group
+    })
 
     try {
       //hotfix
-      //const { currentUser: { uid } } = firebase.auth();
-      let group = '3pDZXnFQ6T2hcKBJvgkq'
-      let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
+      const { currentUser: { uid } } = firebase.auth();
 
-      console.log(`group is and uid is ${group} :: uid ${uid}`)
+      this.setState({
+        currentUser: uid
+      })
+      //let group = '3pDZXnFQ6T2hcKBJvgkq'
+      //let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
+
+    //  console.log(`group is and uid is ${group} :: uid ${uid}`)
 
       let data = await firebase.firestore()
             .collection('groups')
@@ -86,20 +96,17 @@ class viewGroup extends Component {
 
   leaveGroup = async () => {
     if (!this.state.changedStatus) {
-      this.setState({ changedStatus: true})
+      //mutex ?
+      this.setState({ changedStatus: true })
 
-      console.log('Leave GROUP')
-      //now we leave the group
-      let group = '3pDZXnFQ6T2hcKBJvgkq'
-      let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
+      let { groupID, currentUser } = this.state
 
       //delete user from group reference
       let newData = await firebase.firestore()
                         .collection('groups')
-                        .doc(group)
+                        .doc(groupID)
                         .collection('users')
-                      /*  .where("userID", "==", uid)*/
-                        .where("userID", "==", "asdf")
+                        .where("userID", "==", currentUser)
                         .get()
 
       newData.forEach(item => item.ref.delete())
@@ -107,46 +114,46 @@ class viewGroup extends Component {
       //now we need to delete group reference from user
       let userRef = await firebase.firestore()
                       .collection('users')
-                      .doc(uid)
+                      .doc(currentUser)
                       .collection('groupsApartOf')
-                    /*.where("groupID", "==", "thisGroupID") */
-                      .where("groupID", "==", "deleteme")
+                      .where("groupID", "==", groupID)
                       .get()
 
       userRef.forEach(item => item.ref.delete())
+
+      this.setState({ inGroup: 0 })
     }
   }
 
-  joinGroup = () => {
+  joinGroup = async () => {
     if (!this.state.changedStatus) {
       this.setState({ changedStatus: true })
-      console.log('Join GROUP')
 
-      let group = '3pDZXnFQ6T2hcKBJvgkq'
-      let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
+      let { groupID, currentUser } = this.state
 
-
-      const add = await firestore.collection('users')
-          .doc(uid)
+      const add = await firebase.firestore()
+          .collection('users')
+          .doc(currentUser)
           .collection('groupsApartOf')
           .add({
-            groupID: group,
+            groupID,
             name: this.state.name,
             organizer: "fooBaz"
            });
 
-      await firestore.collection('groups')
-          .doc(group)
+      await firebase.firestore()
+          .collection('groups')
+          .doc(groupID)
           .collection('users')
           .add({
             displayName: "ADD",
-            userID: uid,
+            userID: currentUser,
             owner: false,
             admin: false,
             deleteID: 'Dont need this no more'
           })
 
-
+      this.setState({ inGroup: 1 })
     }
   }
 
@@ -175,27 +182,17 @@ class viewGroup extends Component {
 
   async isMember() {
 
-    //let { match: { params: { group } } } = this.props
-    //let { currentUser: { uid } } = firebase.auth();
-    //hotfix~
-    let group = '3pDZXnFQ6T2hcKBJvgkq'
-    let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
-
-    //bad already destructure elsewhere...
-    //console.log(`groups is ${group}`)
+    let { groupID, currentUser } = this.state
 
     let newData = await firebase.firestore()
                       .collection('groups')
-                      .doc(group)
+                      .doc(groupID)
                       .collection('users')
-                      .where("userID", "==", uid)
-                    //  .where("isPublic", "==", 1)
-    let inGroup = await newData.get()
-    //console.log(inGroup.id)
-    //console.log(inGroup.size)
-    this.setState({ inGroup: inGroup.size })
+                      .where("userID", "==", currentUser)
 
-    //console.log(this.state)
+    let inGroup = await newData.get()
+
+    this.setState({ inGroup: inGroup.size })
   }
 
   render() {
@@ -220,7 +217,7 @@ class viewGroup extends Component {
                 inGroup={inGroup}
                 joinGroup={this.joinGroup}
                 leaveGroup={this.leaveGroup}
-                linkData={"fix me"}
+                linkData={this.state.groupID}
             />
           </TouchableOpacity>
         </View>

@@ -73,7 +73,7 @@ export const gCreate = (name, organizer, summary, isPublic) => {
           .collection('groupsApartOf')
           .add({ groupID: id, name, organizer });
 
-      id = add.id
+      //id = add.id
 
       await firestore.collection('groups')
           .doc(id)
@@ -87,7 +87,7 @@ export const gCreate = (name, organizer, summary, isPublic) => {
       await firestore.collection('groups')
           .doc(id)
           .collection('users')
-          .add({ displayName, userID: uid, owner: true, admin: true, deleteID: id })
+          .add({ displayName, userID: uid, owner: true, admin: true, deleteID: 'dontneed' })
 
       dispatch({ type: GROUP_CREATE_SUCCESS })
 

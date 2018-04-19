@@ -23,14 +23,11 @@ const styles = StyleSheet.create({
 
 const AdminButton = ({ ownerUID, userUID, inGroup, linkData, joinGroup, leaveGroup }) => {
 
-  ownerUID = undefined
-  inGroup = 1
-
   if (ownerUID !== undefined && ownerUID === userUID) {
     return (
       <Link
         style={styles.Visual}
-        to={`/adminPanel/currentlyBroken`}>
+        to={`/adminPanel/${linkData}`}>
         <Text> Admin Tools </Text>
       </Link>
     )
@@ -40,9 +37,9 @@ const AdminButton = ({ ownerUID, userUID, inGroup, linkData, joinGroup, leaveGro
         onPress={() => leaveGroup()}
         style={[styles.Visual,  styles.morePad]}
       >
-      <Text>
-        LEAVE GROUP
-      </Text>
+        <Text>
+          LEAVE GROUP
+        </Text>
       </TouchableOpacity>
     )
   } else {
@@ -58,8 +55,6 @@ const AdminButton = ({ ownerUID, userUID, inGroup, linkData, joinGroup, leaveGro
 
     )
   }
-
-//  return (<View />)
 }
 
 export { AdminButton };
