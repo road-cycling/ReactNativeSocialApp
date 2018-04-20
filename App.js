@@ -20,11 +20,16 @@ import {
   viewMembers
 } from './src/components'
 
+/*
+
+Thanks to all the open sourced projects that made this possible <3
+
+*/
+
+
 class App extends Component {
 
   componentWillMount() {
-    //console.log(myGroups)
-
     const config = {
       apiKey: "AIzaSyBwTS9J6NvkQLIIUm6cr_dB1OBQVSYeAEU",
       authDomain: "ssuproject-4980c.firebaseapp.com",
@@ -33,16 +38,7 @@ class App extends Component {
       storageBucket: "ssuproject-4980c.appspot.com",
       messagingSenderId: "289341777797"
     };
-/*
-    var config = {
-      apiKey: "AIzaSyBpjJRLWYAaZvxjGqoTj5OIMagA_6aWJNg",
-      authDomain: "dolphons-b45a8.firebaseapp.com",
-      databaseURL: "https://dolphons-b45a8.firebaseio.com",
-      projectId: "dolphons-b45a8",
-      storageBucket: "dolphons-b45a8.appspot.com",
-      messagingSenderId: "650827752725"
-    };*/
-//firebase.initializeApp(config);
+    //go for it hackers (looking at my githubé)
     firebase.initializeApp(config);
   }
 
@@ -71,41 +67,3 @@ class App extends Component {
 }
 
 export default App;
-
-/*
-<Route path="/getGroup/:group" component={viewGroup} />
-*/
-
-/*
-<Route
-  path='/dashboard'
-  render={(props) => <Dashboard {...props} isAuthed={true} />}
-/>
-*/
-
-
-
-
-
-
-
-
-
-
-/*
-<Route path="/"               component={adminPanel} />
-<Route path="/"         exact component={Login} />
-<Route path="/welcome"        component={Welcome} />
-<Route path="/group"          component={createGroup} />
-<Route path="/mygroups" exact component={myGroups} />
-<Route path="/joingroup"      component={joinGroup} />
-<Route path="/getGroup/:group" component={viewGroup} />
-*/
-
-
-
-
-/*
-Will
-path
-*/

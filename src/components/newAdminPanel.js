@@ -74,7 +74,9 @@ class newAdminPanel extends Component {
           </TouchableOpacity>
         </View>
         <View style={styles.middle}>
-        <List>
+        <List
+          containerStyle={{backgroundColor: '#27C6DA'}}
+        >
           {
             dta.map((item, i) => (
               <ListItem

@@ -30,14 +30,11 @@ class createEvent extends Component {
 
   componentWillMount() {
     let data = this.props.match.params.group
-    console.log(data)
     this.setState({ data })
   }
 
   setDate = (chosenDate) => {
-    console.log(`setting date ${chosenDate}`)
     this.setState({ chosenDate })
-    console.log(this.state.chosenDate)
   }
 
   setLocation = (location) => {

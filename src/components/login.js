@@ -10,12 +10,13 @@ class Login extends Component {
 
 
 
-  async onButtonPress() {
+  onButtonPress() {
     const { email, password, name, authMethod } = this.props;
-    await this.props.loginUser(email, password, name, authMethod)
-    this.props.history.push('/welcome')
+    this.props.loginUser(email, password, name, authMethod)
+      .then(() => this.props.history.push('/welcome'))
+      .catch(err => /**/console.log(err))
 
-    //need error handling
+      //needs toast etc
   }
 
   updateMethod(method) {
@@ -109,7 +110,6 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
-    //console.log(state.loginReducer)
   let {
     authMethod,
     email,

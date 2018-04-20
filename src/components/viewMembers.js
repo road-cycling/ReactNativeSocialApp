@@ -6,6 +6,8 @@ import { Link } from 'react-router-native'
 import firebase from 'firebase';
 import '@firebase/firestore'
 
+import { kickUser } from '../actions'
+
 
 
 import {
@@ -27,16 +29,20 @@ import { List, ListItem, Icon } from 'react-native-elements'
 /* <DatePickerIOS date={this.state.chosenDate} onDateChange={this.setDate} /> */
 class viewMembers extends Component {
 
+  //todo context api <3
   state = {
-    members: []
+    members: [],
+    groupID: ''
   }
 
   async componentWillMount() {
+    console.log(`before kickuser`)
+
     let firestore = firebase.firestore()
     let data = this.props.match.params.group
 
-    //let data = 'chXdAIA6gJiH6spIOmxV'
-    ///this.setState({ data })
+    this.setState({ groupID: data })
+
     let items = []
     let res =  firestore
           .collection('groups')
@@ -45,23 +51,11 @@ class viewMembers extends Component {
 
     res = await res.get()
     res.forEach(async item => {
-      //why is this async???....
       items.push(item.data())
-    //  console.log(item.data())
     })
     this.setState({ members: items })
-    console.log(this.state.members)
   }
 
-
-  kickFromGroup = (uid) => {
-    try {
-      console.log(uid)
-
-    } catch (e) {
-
-    }
-  }
 
   render() {
 
@@ -80,15 +74,17 @@ class viewMembers extends Component {
           </TouchableOpacity>
         </View>
         <View style={styles.middle}>
-        <List>
+        <List
+          containerStyle={{backgroundColor: '#27C6DA'}}
+        >
           {
             this.state.members.map((item, i) => (
               <ListItem
                 key={i}
-                title={item.displayName}
+                title={item.displayName || "test"}
                 leftIcon={{name: item.owner ? 'star': 'av-timer'}}
                 rightIcon={{name: 'clear'}}
-                onPressRightIcon={() => this.kickFromGroup(item.userID)}
+                onPressRightIcon={() => kickUser(item.userID, this.state.groupID)}
                 onPress={() => {}}
               />
             ))

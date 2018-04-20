@@ -16,24 +16,18 @@ import {
   ScrollView
 } from 'react-native'
 
-/* https://stackoverflow.com/questions/23123138/perform-debounce-in-react-js */
 class joinGroup extends Component {
   state = {
     data: [],
-    //firestore : firebase.firestore() //terrible
   }
-  /*
-  updateText = innerText => {
-    this.setState({ innerText })
-  }*/
+
 
   pushNewGroup = id => {
     this.props.history.push(`/getGroup/${id}`)
   }
 
   placeholdTextChange = debounce(async text => {
-    //let firebase.firestore()
-    // TERRIBLE!!!!
+
     try {
       let result = [];
       if (text != '') {
@@ -42,7 +36,7 @@ class joinGroup extends Component {
                           .where("name", "==", text)
                           .where("isPublic", "==", 1)
         data = await data.get()
-        //again why is this async /.\
+        // why is this async /.\
         data.forEach(async item => result.push([item.data(), item.id]))
         this.setState({ data: result })
       }

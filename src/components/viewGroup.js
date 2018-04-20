@@ -7,6 +7,11 @@ import { AdminButton } from './button'
 import '@firebase/firestore'
 import { Card, ListItem, Button, SearchBar } from 'react-native-elements'
 
+import { kickUser, userJoinGroup } from '../actions'
+
+import { CardListItem } from './reuse'
+
+
 import {
   StyleSheet,
   Text,
@@ -50,23 +55,19 @@ class viewGroup extends Component {
   async componentWillMount() {
     //hotfix
     let { match: { params: { group } } } = this.props
-    //coo
+
 
     this.setState({
       groupID: group
     })
 
     try {
-      //hotfix
+
       const { currentUser: { uid } } = firebase.auth();
 
       this.setState({
         currentUser: uid
       })
-      //let group = '3pDZXnFQ6T2hcKBJvgkq'
-      //let uid = 'XdLTQIYrVTU4Y9JThlfOoZHGp6R2'
-
-    //  console.log(`group is and uid is ${group} :: uid ${uid}`)
 
       let data = await firebase.firestore()
             .collection('groups')
@@ -96,31 +97,9 @@ class viewGroup extends Component {
 
   leaveGroup = async () => {
     if (!this.state.changedStatus) {
-      //mutex ?
       this.setState({ changedStatus: true })
-
       let { groupID, currentUser } = this.state
-
-      //delete user from group reference
-      let newData = await firebase.firestore()
-                        .collection('groups')
-                        .doc(groupID)
-                        .collection('users')
-                        .where("userID", "==", currentUser)
-                        .get()
-
-      newData.forEach(item => item.ref.delete())
-
-      //now we need to delete group reference from user
-      let userRef = await firebase.firestore()
-                      .collection('users')
-                      .doc(currentUser)
-                      .collection('groupsApartOf')
-                      .where("groupID", "==", groupID)
-                      .get()
-
-      userRef.forEach(item => item.ref.delete())
-
+      await kickUser(currentUser, groupID)
       this.setState({ inGroup: 0 })
     }
   }
@@ -128,31 +107,9 @@ class viewGroup extends Component {
   joinGroup = async () => {
     if (!this.state.changedStatus) {
       this.setState({ changedStatus: true })
-
       let { groupID, currentUser } = this.state
-
-      const add = await firebase.firestore()
-          .collection('users')
-          .doc(currentUser)
-          .collection('groupsApartOf')
-          .add({
-            groupID,
-            name: this.state.name,
-            organizer: "fooBaz"
-           });
-
-      await firebase.firestore()
-          .collection('groups')
-          .doc(groupID)
-          .collection('users')
-          .add({
-            displayName: "ADD",
-            userID: currentUser,
-            owner: false,
-            admin: false,
-            deleteID: 'Dont need this no more'
-          })
-
+      await userJoinGroup(currentUser, groupID, this.state.name)
+        //.catch(() => {})
       this.setState({ inGroup: 1 })
     }
   }
@@ -197,7 +154,8 @@ class viewGroup extends Component {
 
   render() {
 
-    let { uid, owner, inGroup } = this.state;
+    let { uid, owner, inGroup, pastEvents, upcomingEvents } = this.state;
+
     //typescript looks really attractive rn
 
     return (
@@ -240,40 +198,17 @@ class viewGroup extends Component {
             <Text> {this.state.summary.substring(0, 300)}</Text>
           </View>
           <View style={styles.tBox}>
-            <Text style={{alignSelf: 'center'}}> { this.state.upcomingEvents.length == 0 ? "" : "Upcoming Events" } </Text>
-              <FlatList
-                data={this.state.upcomingEvents}
-                renderItem={u =>
-                  <Card containerStyle={{flex: 1, padding: 0}} >
-                      <ListItem
-                        key={ u.index }
-                        title={ u.item.summary }
-                        subtitle={ u.item.location + " " + u.item.chosenDate }
-                        containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
-                        titleStyle={{ color: 'black' }}
-                        subtitleStyle={{ color: '#0097A7' }}
-                        onPressRightIcon={() => {}}
-                      />
-                  </Card>
-                }
+          
+              <CardListItem
+                events={upcomingEvents}
+                eventType={"Upcoming Events"}
               />
-            <Text style={{alignSelf: 'center'}}> { this.state.pastEvents.length == 0 ? "" : "Past Events" } </Text>
-            <FlatList
-              data={ this.state.pastEvents}
-              renderItem={u =>
-                <Card containerStyle={{flex: 1, padding: 0}} >
-                    <ListItem
-                      key={ u.index }
-                      title={ u.item.summary }
-                      subtitle={ u.item.location + " " + u.item.chosenDate }
-                      containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
-                      titleStyle={{ color: 'black' }}
-                      subtitleStyle={{ color: '#0097A7' }}
-                      onPressRightIcon={() => {}}
-                    />
-                </Card>
-              }
-            />
+
+              <CardListItem
+                events={pastEvents}
+                eventType={"Past Events"}
+              />
+
           </View>
           </View>
         )
@@ -360,6 +295,23 @@ const styles = StyleSheet.create({
   }
 })
 
-
+/*
+<Text style={{alignSelf: 'center'}}> { this.state.pastEvents.length == 0 ? "" : "Past Events" } </Text>
+<FlatList
+  data={ this.state.pastEvents}
+  renderItem={u =>
+    <Card containerStyle={{flex: 1, padding: 0}} >
+        <ListItem
+          key={ u.index }
+          title={ u.item.location }
+          subtitle={ u.item.summary + " " + u.item.chosenDate }
+          containerStyle={{ backgroundColor: '#00BCD4', borderBottomColor: 'white' }}
+          titleStyle={{ color: 'black' }}
+          subtitleStyle={{ color: '#0097A7' }}
+          onPressRightIcon={() => {}}
+        />
+    </Card>
+  }
+/>*/
 
 export default connect(mapStateToProps)(viewGroup);
